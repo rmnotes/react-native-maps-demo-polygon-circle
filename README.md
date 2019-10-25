@@ -10,6 +10,8 @@ Run a `rm -rf ./node_modules && npm install && cd ios && pod update && cd ..` to
 
 Styling of Polygon and Cirlce works consistently correct on GoogleMaps 2.5.0, 2.6.0 and 2.7.0, but does not work (after initial render) on any tested version from 3.0.3 to 3.5.0.
 
+There is a [Workaround](https://github.com/react-native-community/react-native-maps/issues/3025#issuecomment-538345230) to ensure correct rendering by using `setNativeProps`. It can be enabled/disabled by clicking on the lower left button. This workaround *appears* to work on all GoogleMaps v3.+ variants, as long as the wrapper component sets any property that is used in any visible element.
+
 # Forcing a correct render
 
 Sometimes the first rendering is correct. Often not.

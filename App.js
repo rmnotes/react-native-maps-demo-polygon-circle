@@ -27,6 +27,14 @@ const styles = StyleSheet.create({
     bottom:20,
     backgroundColor: "#00ff00",
     color: "#110011",
+    width:150
+  },
+  button2:{
+    position: "absolute",
+    left: 20,
+    bottom:20,
+    backgroundColor: "#0000ff",
+    color: "#110011",
     width:200
   }
 });
@@ -50,8 +58,28 @@ const styles = StyleSheet.create({
     ]},
   ]
 
+const  NatPropPolygon = ({ onLayout, ...props }) => {
+    const ref = React.useRef();
+    function onLayoutPolygon() {
+      if (ref.current) {
+        ref.current.setNativeProps({ fillColor: props.fillColor });
+      }
+    }
+    return <Polygon ref={ref} onLayout={onLayoutPolygon} {...props} />;
+}
+const  NatCircle = ({ onLayout, ...props }) => {
+  const ref = React.useRef();
+  function onLayoutPolygon() {
+    if (ref.current) {
+      ref.current.setNativeProps({ strokeColor: props.strokeColor });
+    }
+  }
+  return <Circle ref={ref} onLayout={onLayoutPolygon} {...props} />;
+}
+
 const App: () => React$Node = () => {
   const [polygonVisisble, setPolygonVisibility]= useState(true);
+  const [useNativeProps, setUseNativeProps]= useState(true);
   return (
     <View style={styles.mapcontainer}>
       <MapView
@@ -62,8 +90,10 @@ const App: () => React$Node = () => {
         {
           polygons.map( ( p, id) => {
             return polygonVisisble ?
-              <Polygon key={id} fillColor={p.fill} strokeColor={"yellow"} strokeWidth={5} coordinates={p.coordinates} />
-              : <Circle key={id} fillColor={p.fill} strokeColor={"green"} strokeWidth={5} center={p.coordinates[0]} radius={7000.0*(id+1)} />
+              useNativeProps ? <NatPropPolygon key={id} fillColor={p.fill}  strokeWidth={5} coordinates={p.coordinates} />
+                             : <Polygon        key={id} fillColor={p.fill}  strokeWidth={5} coordinates={p.coordinates} />
+              : useNativeProps ? <NatCircle key={id} fillColor={p.fill} strokeColor={"green"} strokeWidth={5} center={p.coordinates[0]} radius={7000.0*(id+1)} />
+                               : <Circle    key={id} fillColor={p.fill} strokeColor={"green"} strokeWidth={5} center={p.coordinates[0]} radius={7000.0*(id+1)} />
           })
         }
       </MapView>
@@ -72,6 +102,13 @@ const App: () => React$Node = () => {
             title={polygonVisisble ? "Show Circles" : "Show Polygons"}
             color="#f194ff"
             onPress={() => setPolygonVisibility(! polygonVisisble)}
+        />
+      </View>
+      <View style={styles.button2}>
+        <Button
+            title={useNativeProps ? "Use Props" : "Use NativeProps"}
+            color="#f194ff"
+            onPress={() => setUseNativeProps(! useNativeProps)}
         />
       </View>
     </View>
